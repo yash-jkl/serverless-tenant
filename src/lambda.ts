@@ -14,6 +14,6 @@ export const handler: Handler = async (event: any) => {
     client,
     pod.name,
   );
-  console.log('From tenant');
-  console.log(dataFromTenant);
+  // console.log('From tenant');
+  // console.log(dataFromTenant);
 };

@@ -12,7 +12,7 @@ export class MainDatabaseService {
     const query = `id = '${data.id}'`;
     try {
       const clients = await this.databaseService.query(
-        `select parent_id, id from clients where ${query};`,
+        `select * from clients where ${query};`,
       );
       const podId = await this.databaseService.query(
         `select pod_id from tenant_pods where tenant_id ='${
