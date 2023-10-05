@@ -4,19 +4,20 @@ import { env } from '../env';
 
 @Injectable()
 export class TenantDatabaseService {
-  async getClient(name): Promise<PoolClient> {
+  async getClient(database: { DB_USERNAME: any; DB_HOST: any; DB_DATABASE: any; DB_PASSWORD: any; DB_PORT: any; }): Promise<PoolClient> {
     const pool = new Pool({
-      user: env.db.username,
-      host: env.db.host,
-      database: name,
-      password: env.db.password,
-      port: env.db.port,
+      user: database.DB_USERNAME,
+      host: database.DB_HOST,
+      database: database.DB_DATABASE,
+      password: database.DB_PASSWORD,
+      port: database.DB_PORT,
     });
     return pool.connect();
   }
 
-  async query(name: string, queryText: string, values?: any[]): Promise<any> {
-    const client = await this.getClient(name);
+  async query(database:{ DB_USERNAME: any; DB_HOST: any; DB_DATABASE: any; DB_PASSWORD: any; DB_PORT: any; }, queryText: string, values?: any[]): Promise<any> {
+    console.log(database)
+    const client = await this.getClient(database);
     try {
       const result = await client.query(queryText, values);
       return result.rows;
