@@ -1,10 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Pool, PoolClient } from 'pg';
-import { env } from '../env';
 
 @Injectable()
 export class TenantDatabaseService {
-  async getClient(database: { DB_USERNAME: any; DB_HOST: any; DB_DATABASE: any; DB_PASSWORD: any; DB_PORT: any; }): Promise<PoolClient> {
+  async getClient(database: {
+    DB_USERNAME: any;
+    DB_HOST: any;
+    DB_DATABASE: any;
+    DB_PASSWORD: any;
+    DB_PORT: any;
+  }): Promise<PoolClient> {
     const pool = new Pool({
       user: database.DB_USERNAME,
       host: database.DB_HOST,
@@ -15,14 +20,23 @@ export class TenantDatabaseService {
     return pool.connect();
   }
 
-  async query(database:{ DB_USERNAME: any; DB_HOST: any; DB_DATABASE: any; DB_PASSWORD: any; DB_PORT: any; }, queryText: string, values?: any[]): Promise<any> {
-    console.log(database)
+  async query(
+    database: {
+      DB_USERNAME: any;
+      DB_HOST: any;
+      DB_DATABASE: any;
+      DB_PASSWORD: any;
+      DB_PORT: any;
+    },
+    queryText: string,
+    values?: any[],
+  ): Promise<any> {
     const client = await this.getClient(database);
     try {
-      const result = await client.query(queryText, values);
-      return result.rows;
-    } finally {
-      client.release();
+      await client.query(queryText, values);
+    } catch (err) {
+      console.log(err);
     }
+    return client;
   }
 }
