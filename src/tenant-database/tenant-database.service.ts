@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Pool, PoolClient } from 'pg';
+import { Database } from '../utils/constants';
 
 @Injectable()
 export class TenantDatabaseService {
-  async getClient(database: {
+  async getDatabase(database: {
     DB_USERNAME: any;
     DB_HOST: any;
     DB_DATABASE: any;
@@ -21,17 +22,11 @@ export class TenantDatabaseService {
   }
 
   async query(
-    database: {
-      DB_USERNAME: any;
-      DB_HOST: any;
-      DB_DATABASE: any;
-      DB_PASSWORD: any;
-      DB_PORT: any;
-    },
+    database: Database,
     queryText: string,
     values?: any[],
   ): Promise<any> {
-    const client = await this.getClient(database);
+    const client = await this.getDatabase(database);
     try {
       await client.query(queryText, values);
     } catch (err) {

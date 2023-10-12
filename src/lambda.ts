@@ -8,14 +8,14 @@ export const handler: Handler = async (event: any) => {
     id: string;
   } = event;
   try {
-    const [client, pod] = await new MainDatabaseService().getClientData(data);
+    const {clients, parents, credential} = await new MainDatabaseService().getClientData(data);
     const secret = await new AwsSecrets().getSecrets();
-    const clientDbConnection = JSON.parse(secret[pod[0].pg_sql_db_key_name]);
-    const clientDb = await new TenantDataService().getDataFromTenant(
-      client,
+    const clientDbConnection = JSON.parse(secret[credential.pg_sql_db_key_name]);
+    await new TenantDataService().getDataFromTenant(
+      clients,
+      parents,
       clientDbConnection,
     );
-    clientDb.release();
   } catch (error) {
     console.log(error);
   }
