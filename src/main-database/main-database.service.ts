@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../database/database.service';
 import { eventType } from '../utils/constants';
 import { ClientTableService } from './client-table/client-table.service';
 import { PodsService } from './pods/pods.service';
@@ -8,18 +7,40 @@ import { PodsService } from './pods/pods.service';
 export class MainDatabaseService {
   constructor(
     private readonly clientTableService: ClientTableService = new ClientTableService(),
-    private readonly podsService: PodsService = new PodsService()
-  ) { }
+    private readonly podsService: PodsService = new PodsService(),
+  ) {}
 
   async getClientData(data: eventType) {
     try {
-      const { clients, parents } = await this.clientTableService.getClientData(data)
-      const { credential } = await this.podsService.getCredentials(parents[0].id ?? clients[0].id)
+      const { clients, getClientFinancialProfiles, parents } =
+        await this.clientTableService.getClientData(data);
+      const { credential } = await this.podsService.getCredentials(
+        parents[0].id ?? clients[0].id,
+      );
+      return {
+        clients: clients[0],
+        getClientFinancialProfiles: getClientFinancialProfiles[0],
+        parents: parents[0],
+        credential: credential,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new Error(error);
+    }
+  }
+
+  async getClientFinancialProfileData(data: eventType) {
+    try {
+      const { clients, parents } =
+        await this.clientTableService.getClientData(data);
+      const { credential } = await this.podsService.getCredentials(
+        parents[0].id ?? clients[0].id,
+      );
       return {
         clients: clients[0],
         parents: parents[0],
-        credential: credential
-      }
+        credential: credential,
+      };
     } catch (error) {
       console.log(error);
       throw new Error(error);

@@ -7,26 +7,59 @@ import { ClientTableService } from './client-table/client-table.service';
 export class TenantDataService {
   constructor(
     private readonly tenantService: TenantDatabaseService = new TenantDatabaseService(),
-    private readonly clientTableService: ClientTableService = new ClientTableService()
-  ) { }
+    private readonly clientTableService: ClientTableService = new ClientTableService(),
+  ) {}
 
   async getDataFromTenant(
     clients: any,
+    clientFinancialProfiles: any,
     parents: any,
     database: Database,
-
   ) {
     try {
       const clientDatabase = await this.tenantService.getDatabase(database);
-      const client = await this.clientTableService.getClient(clientDatabase, parents);
       if (parents) {
-        const parent = await this.clientTableService.getClient(clientDatabase, clients)
-        if (!parent.rows[0]) await this.clientTableService.createClient(clientDatabase, parents);
+        const parent = await this.clientTableService.getClient(
+          clientDatabase,
+          parents,
+        );
+        if (!parent.rows.length) {
+          await this.clientTableService.createClient(clientDatabase, parents);
+        }
       }
-      if (!client.rows[0]) {
+
+      const client = await this.clientTableService.getClient(
+        clientDatabase,
+        clients,
+      );
+      if (!client.rows.length) {
         await this.clientTableService.createClient(clientDatabase, clients);
+        await this.clientTableService.createClientFinancialProfiles(
+          clientDatabase,
+          clientFinancialProfiles,
+        );
       } else {
-        await this.clientTableService.updateClient(clientDatabase, parents);
+        const data = await this.clientTableService.updateClient(
+          clientDatabase,
+          clients,
+        );
+        console.log(data);
+        const getClientFinancialProfileData =
+          await this.clientTableService.getClientFinancialProfileData(
+            clientDatabase,
+            clientFinancialProfiles,
+          );
+        if (getClientFinancialProfileData.rows.length) {
+          await this.clientTableService.updateClientFinancialProfiles(
+            clientDatabase,
+            clientFinancialProfiles,
+          );
+        } else {
+          await this.clientTableService.createClientFinancialProfiles(
+            clientDatabase,
+            clientFinancialProfiles,
+          );
+        }
       }
       clientDatabase.release();
     } catch (error) {

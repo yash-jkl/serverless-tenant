@@ -8,11 +8,15 @@ export const handler: Handler = async (event: any) => {
     id: string;
   } = event;
   try {
-    const {clients, parents, credential} = await new MainDatabaseService().getClientData(data);
+    const { clients, getClientFinancialProfiles, parents, credential } =
+      await new MainDatabaseService().getClientData(data);
     const secret = await new AwsSecrets().getSecrets();
-    const clientDbConnection = JSON.parse(secret[credential.pg_sql_db_key_name]);
+    const clientDbConnection = JSON.parse(
+      secret[credential.pg_sql_db_key_name],
+    );
     await new TenantDataService().getDataFromTenant(
       clients,
+      getClientFinancialProfiles,
       parents,
       clientDbConnection,
     );

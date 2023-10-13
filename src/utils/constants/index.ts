@@ -8,4 +8,4 @@ export type Database = {
   DB_DATABASE: string;
   DB_PASSWORD: string;
   DB_PORT: number;
-}
+};

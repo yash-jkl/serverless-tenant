@@ -7,6 +7,11 @@ import { PodsService } from './pods/pods.service';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [MainDatabaseService, DatabaseService, ClientTableService, PodsService],
+  providers: [
+    MainDatabaseService,
+    DatabaseService,
+    ClientTableService,
+    PodsService,
+  ],
 })
 export class MainDatabaseModule {}
