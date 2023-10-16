@@ -23,27 +23,22 @@ export class TenantDataService {
           clientDatabase,
           parents,
         );
-        if (!parent.rows.length) {
+        if (!parent?.rows?.length) {
           await this.clientTableService.createClient(clientDatabase, parents);
         }
       }
-
       const client = await this.clientTableService.getClient(
         clientDatabase,
         clients,
       );
-      if (!client.rows.length) {
+      if (!client?.rows?.length) {
         await this.clientTableService.createClient(clientDatabase, clients);
         await this.clientTableService.createClientFinancialProfiles(
           clientDatabase,
           clientFinancialProfiles,
         );
       } else {
-        const data = await this.clientTableService.updateClient(
-          clientDatabase,
-          clients,
-        );
-        console.log(data);
+        await this.clientTableService.updateClient(clientDatabase, clients);
         const getClientFinancialProfileData =
           await this.clientTableService.getClientFinancialProfileData(
             clientDatabase,

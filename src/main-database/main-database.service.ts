@@ -17,6 +17,7 @@ export class MainDatabaseService {
       const { credential } = await this.podsService.getCredentials(
         parents[0].id ?? clients[0].id,
       );
+      console.log(credential)
       return {
         clients: clients[0],
         getClientFinancialProfiles: getClientFinancialProfiles[0],
@@ -29,21 +30,4 @@ export class MainDatabaseService {
     }
   }
 
-  async getClientFinancialProfileData(data: eventType) {
-    try {
-      const { clients, parents } =
-        await this.clientTableService.getClientData(data);
-      const { credential } = await this.podsService.getCredentials(
-        parents[0].id ?? clients[0].id,
-      );
-      return {
-        clients: clients[0],
-        parents: parents[0],
-        credential: credential,
-      };
-    } catch (error) {
-      console.log(error);
-      throw new Error(error);
-    }
-  }
 }

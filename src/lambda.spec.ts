@@ -1,4 +1,4 @@
-import { mockClient, mockPod, mockSecret } from './constants';
+import { mockClient, mockClientData, mockClientFinancialProfiles, mockParentData, mockPod, mockSecret } from './constants';
 import { handler } from './lambda'; // Import your Lambda handler
 import { MainDatabaseService } from './main-database/main-database.service';
 import { TenantDataService } from './tenant-data/tenant-data.service';
@@ -7,7 +7,12 @@ import { AwsSecrets } from './utils/aws-services/aws-secrets';
 // Mock MainDatabaseService
 jest.mock('./main-database/main-database.service', () => ({
   MainDatabaseService: jest.fn().mockImplementation(() => ({
-    getClientData: jest.fn().mockResolvedValue([mockClient, mockPod]),
+    getClientData: jest.fn().mockResolvedValue({
+      clients: mockClientData[0],
+      getClientFinancialProfiles: mockClientFinancialProfiles[0],
+      parents: mockParentData[0],
+      credential: mockPod[0],
+    }),
   })),
 }));
 
@@ -35,8 +40,8 @@ describe('Lambda Handler', () => {
     await handler(event, null, null);
 
     // Example assertions:
-    expect(MainDatabaseService).toHaveBeenCalledWith();
-    expect(AwsSecrets).toHaveBeenCalledWith();
-    expect(TenantDataService).toHaveBeenCalledWith();
+    expect(MainDatabaseService).toHaveBeenCalled();
+    expect(AwsSecrets).toHaveBeenCalled();
+    expect(TenantDataService).toHaveBeenCalled();
   });
 });

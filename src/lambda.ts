@@ -11,6 +11,7 @@ export const handler: Handler = async (event: any) => {
     const { clients, getClientFinancialProfiles, parents, credential } =
       await new MainDatabaseService().getClientData(data);
     const secret = await new AwsSecrets().getSecrets();
+    console.log(secret)
     const clientDbConnection = JSON.parse(
       secret[credential.pg_sql_db_key_name],
     );
