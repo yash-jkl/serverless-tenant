@@ -160,3 +160,12 @@ export const mockParentGetData = {
     },
   ],
 };
+
+export type eventType = {
+  body: [
+    {
+      type: string,
+      id: string
+    }
+  ]
+}

@@ -6,13 +6,13 @@ import { eventType } from '../../utils/constants';
 export class ClientTableService {
   constructor(
     private readonly databaseService: DatabaseService = new DatabaseService(),
-  ) {}
+  ) { }
 
   async getClientData(data: eventType) {
     let parents = null;
-    const ids = data.id;
+    const { id } = data.body.find(item => item.type === 'client');
     try {
-      const clients = await this.getClient(ids);
+      const clients = await this.getClient(id);
       const getClientFinancialProfiles = await this.getClientFinancialProfiles(
         clients[0].id,
       );

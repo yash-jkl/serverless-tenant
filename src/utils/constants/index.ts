@@ -1,6 +1,11 @@
 export type eventType = {
-  id: string;
-};
+  body: [
+    {
+      type: string,
+      id: string
+    }
+  ]
+}
 
 export type Database = {
   DB_USERNAME: string;
